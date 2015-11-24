@@ -264,10 +264,35 @@ signals.post_delete.connect(delete_issue, sender=Bounty)
 
 
 class Solution(models.Model):
+    
+    IN_REVIEW = 'in review'
+    MERGED = 'Merged or accepted'
+    REQUESTED_REVISION = 'Requested for revision'
+    STATUS_CHOICES = (
+        (IN_REVIEW, 'In review'),
+        (MERGED, 'Merged or accepted'),
+        (REQUESTED_REVISION, 'Requested for revision'),
+    )
+
     issue = models.ForeignKey(Issue)
     submitted_by = models.ForeignKey(UserProfile)
     submitted_at = models.DateTimeField(auto_now_add=True)
     pr_link = models.URLField(help_text="Pull Request Link ")
+    status = models.CharField(max_length=250 ,choices=STATUS_CHOICES, default=IN_REVIEW)
 
     def __unicode__(self):
         return str(self.issue)+" solution"
+
+    def notify_owner(self):
+        """Email Bounty Owner
+        """
+        pass
+
+    def notify_coder(self):
+        pass
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.notify_owner()
+    
+        super(Solution, self).save(*args, **kwargs)

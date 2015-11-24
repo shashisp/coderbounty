@@ -1,5 +1,5 @@
 from django import forms
-from .models import Issue,Bounty,UserProfile
+from .models import Issue,Bounty,UserProfile, Solution
 from django.contrib.auth.models import User
 
 class IssueCreateForm(forms.ModelForm):
@@ -44,3 +44,9 @@ class UserProfileForm(forms.ModelForm):
         except User.DoesNotExist:
               pass
       return email
+
+class SolutionForm(forms.ModelForm):
+
+  class Meta:
+    model = Solution
+    fields = ('pr_link',)
